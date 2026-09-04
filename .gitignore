@@ -1,0 +1,10 @@
+*.pyc
+*.npz
+*result*
+*sim/*
+*.csv
+!data/kic11599385_kepler_q05.csv
+data
+*cache*
+*tess_lightcurves*
+*.orig
