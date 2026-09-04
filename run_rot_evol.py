@@ -18,6 +18,7 @@ jax.config.update("jax_enable_x64", True)
 print(jax.devices())
 print(jax.device_count())
 from rot_evol import (
+    RESULT_ROOT,
     IsochronePosterior,
     RotEvol,
     frame_ids_from_observation_log,
@@ -125,7 +126,7 @@ for run_index, (mass_range, feh_range, radius_range) in enumerate(
     isochrone_means = load_isochrone_posterior_means(re.frame_id)
     triangle_path = save_isochrone_mean_triangle(
         isochrone_means,
-        Path("result") / label / "isochrone_mass_age_feh_triangle.png",
+        RESULT_ROOT / label / "isochrone_mass_age_feh_triangle.png",
     )
     print(f"Saved isochrone-mean triangle: {triangle_path}", flush=True)
 
@@ -192,7 +193,7 @@ for run_index, (mass_range, feh_range, radius_range) in enumerate(
     )
     save_logage_histogram(
         re,
-        Path("result") / label / "logage_hist.png",
+        RESULT_ROOT / label / "logage_hist.png",
         idata=idata,
     )
     print(f"[{run_index}/{len(selections)}] Completed: {label}", flush=True)

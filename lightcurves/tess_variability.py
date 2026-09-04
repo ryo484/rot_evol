@@ -359,17 +359,21 @@ def analyze_saved_lightcurves(manifest, output_root, **kwargs):
 def load_stellar_rotation_parameters(
     frame_ids,
     *,
-    analysis_root="/mnt6tb/data/analysis_results",
+    analysis_root=None,
     spec_label="orders03-08",
     iso_label="mistfit_g_st38",
 ):
     """Load R and v sin(i) using the canonical ``rot_evol`` result loaders."""
     from rot_evol import (
+        ANALYSIS_ROOT,
         find_frame_dir,
         normalize_frame_id,
         posterior_mean_std,
         result_path,
     )
+
+    if analysis_root is None:
+        analysis_root = ANALYSIS_ROOT
 
     columns = [
         "frame_id", "frame_norm", "stellar_parameter_status",

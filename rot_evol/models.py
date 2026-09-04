@@ -1,14 +1,15 @@
 """Rotation laws and NumPyro model definitions."""
 
+from functools import lru_cache
+import os
+from pathlib import Path
+
 import jax
 import jax.numpy as jnp
 import numpy as np
 import numpyro
 import numpyro.distributions as dist
 from tinygp import kernels
-import sys
-sys.path.append("/mnt/ogawa/work/jaxspin")
-from jaxspin import SpinModel
 
 jax.config.update("jax_enable_x64", True)
 
@@ -21,8 +22,30 @@ DAY_S = 86400.0
 GP_LOGAGE_KNOTS = jnp.linspace(-1.0, jnp.log10(13.8), 12)
 GP_JITTER = 1.0e-6
 
-JAXSPIN_DATA_DIR = "/mnt/ogawa/work/jaxspin/jaxspin/data"
-jaxspin_model = SpinModel(data_dir=JAXSPIN_DATA_DIR)
+
+@lru_cache(maxsize=1)
+def _get_jaxspin_model():
+    """Load the optional JAXSpin model only when that rotation law is used."""
+    try:
+        import jaxspin
+        from jaxspin import SpinModel
+    except ImportError as error:
+        raise ImportError(
+            "rotation_law='jaxspin' requires the optional jaxspin package"
+        ) from error
+
+    configured = os.environ.get("ROT_EVOL_JAXSPIN_DATA_DIR")
+    data_dir = (
+        Path(configured).expanduser()
+        if configured
+        else Path(jaxspin.__file__).resolve().parent / "data"
+    )
+    if not data_dir.is_dir():
+        raise FileNotFoundError(
+            f"JAXSpin data directory not found: {data_dir}. Set "
+            "ROT_EVOL_JAXSPIN_DATA_DIR to the directory containing its grids."
+        )
+    return SpinModel(data_dir=str(data_dir))
 
 class RotEvolModelMixin:
     def model(
@@ -459,6 +482,7 @@ def jaxspin_rotation_law(
     mass = float(mass)
     output_spec = jax.ShapeDtypeStruct((n_age,), jnp.float64)
     age_grid = jnp.linspace(float(age_start), float(age_end), n_age)
+    jaxspin_model = _get_jaxspin_model()
 
     def compute_track(feh_value, ro_wmb_factor_value):
         result = jaxspin_model.compute(

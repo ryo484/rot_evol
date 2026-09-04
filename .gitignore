@@ -1,10 +1,38 @@
-*.pyc
-*.npz
-*result*
-*sim/*
-*.csv
-!data/kic11599385_kepler_q05.csv
-data
-*cache*
-*tess_lightcurves*
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Packaging and environments
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Jupyter and editors
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
 *.orig
+
+# Local observations, grids, caches, and generated inference products
+/analysis_results/
+/data/
+/result/
+/sim/
+/observation_log.csv
+/reusable_star_gaia.csv
+/lightcurves/tess_lightcurves/
+/lightcurves/tess_lightcurves.py
+*.fits
+*.fits.gz
+*.nc
+*.npz
+*.log

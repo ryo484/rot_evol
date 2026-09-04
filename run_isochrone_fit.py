@@ -18,6 +18,7 @@ import numpy as np
 from numpyro.infer import MCMC, NUTS, init_to_value
 
 from rot_evol import (
+    RESULT_ROOT,
     RotEvol,
     frame_ids_from_observation_log,
     load_isochrone_posterior_means,
@@ -166,7 +167,7 @@ def add_metadata(idata, population, mass_range, feh_range):
 
 
 def save_plots(population, idata, label):
-    output_dir = Path("result") / label
+    output_dir = RESULT_ROOT / label
     means = load_isochrone_posterior_means(population.frame_id)
     paths = {
         "isochrone_triangle": save_isochrone_mean_triangle(
@@ -217,7 +218,7 @@ def main():
             mass_range=mass_range, feh_range=feh_range
         )
         label = result_label(mass_range, feh_range)
-        output_path = Path("result") / label / "mcmc.nc"
+        output_path = RESULT_ROOT / label / "mcmc.nc"
         print(
             f"\n[{run_index + 1}/{len(selections)}] Result label: {label}\n"
             f"{population.N} stars: {population.frame_id.tolist()}\n"

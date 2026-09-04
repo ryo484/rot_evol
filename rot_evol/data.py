@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 import hashlib
 import json
+import os
 from pathlib import Path
 
 import arviz as az
@@ -12,10 +13,12 @@ from tqdm.auto import tqdm
 
 from .models import RotEvolModelMixin
 
-ANALYSIS_ROOT = Path("/mnt6tb/data/analysis_results")
+ANALYSIS_ROOT = Path(
+    os.environ.get("ROT_EVOL_ANALYSIS_ROOT", "analysis_results")
+).expanduser()
 SPEC_LABEL = "orders03-08"
 ISO_LABEL = "mistfit_g_st38"
-RESULT_ROOT = Path("result")
+RESULT_ROOT = Path(os.environ.get("ROT_EVOL_RESULT_ROOT", "result")).expanduser()
 
 def normalize_frame_id(value):
     value = str(value).strip().removeprefix("GRA").removeprefix("G")
